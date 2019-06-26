@@ -21,7 +21,7 @@ ENTRY_PT = GPS_PRINTER_Main
 #
 # Object files required to build subsystem.
 #
-OBJS = gps_printer.o
+OBJS = gps_printer.o gps_print_msgs.o
 
 #
 # Source files required to build subsystem; used to generate dependencies.
