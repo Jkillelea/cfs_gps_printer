@@ -41,6 +41,11 @@ void GPS_PRINTER_Main(void) {
                 GpsGpgsaMsg_t *gpsGpgsa = (GpsGpgsaMsg_t *) gpsMessage;
                 print_gpgsa(&gpsGpgsa->gpsGpgsa);
                 break;
+            case GPS_READER_GPS_GPGSV_MSG:
+                OS_printf("GPS_PRINTER: GPS_READER_GPS_GPGSV_MSG Message (0x%x)\n", msgId);
+                GpsGpgsvMsg_t *gpsGpgsv = (GpsGpgsvMsg_t *) gpsMessage;
+                print_gpgsv(&gpsGpgsv->gpsGpgsv);
+                break;
             case GPS_READER_GPS_GPRMC_MSG:
                 OS_printf("GPS_PRINTER: GPS_READER_GPS_GPRMC_MSG Message (0x%x)\n", msgId);
                 GpsGprmcMsg_t *gpsGprmc = (GpsGprmcMsg_t *) gpsMessage;
@@ -69,6 +74,7 @@ void GPS_PRINTER_Init(void) {
     CFE_SB_Subscribe(GPS_READER_GPS_INFO_MSG,  gpsPipe);
     CFE_SB_Subscribe(GPS_READER_GPS_GPGGA_MSG, gpsPipe);
     CFE_SB_Subscribe(GPS_READER_GPS_GPGSA_MSG, gpsPipe);
+    CFE_SB_Subscribe(GPS_READER_GPS_GPGSV_MSG, gpsPipe);
     CFE_SB_Subscribe(GPS_READER_GPS_GPRMC_MSG, gpsPipe);
     CFE_SB_Subscribe(GPS_READER_GPS_GPVTG_MSG, gpsPipe);
 }
