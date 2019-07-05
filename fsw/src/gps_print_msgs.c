@@ -46,21 +46,21 @@ void print_gpgga(nmeaGPGGA *gpgga) {
     OS_printf("        sec  = %d,\n", gpgga->utc.sec);
     OS_printf("        hsec = %d,\n", gpgga->utc.hsec);
     OS_printf("    },\n");
-    OS_printf("    lat      = %lf %s,\n", decimal_minutes2decimal_decimal(gpgga->lat), &gpgga->ns);
-    OS_printf("    lon      = %lf %s,\n", decimal_minutes2decimal_decimal(gpgga->lon), &gpgga->ew);
+    OS_printf("    lat      = %lf %c,\n", decimal_minutes2decimal_decimal(gpgga->lat), gpgga->ns);
+    OS_printf("    lon      = %lf %c,\n", decimal_minutes2decimal_decimal(gpgga->lon), gpgga->ew);
     OS_printf("    sig      = %d,\n",     gpgga->sig);
     OS_printf("    satinuse = %d,\n",     gpgga->satinuse);
     OS_printf("    HDOP     = %lf,\n",    gpgga->HDOP);
-    OS_printf("    elv      = %lf %s,\n", gpgga->elv,  &gpgga->elv_units);
-    OS_printf("    diff     = %lf %s,\n", gpgga->diff, &gpgga->diff_units);
+    OS_printf("    elv      = %lf %c,\n", gpgga->elv,  gpgga->elv_units);
+    OS_printf("    diff     = %lf %c,\n", gpgga->diff, gpgga->diff_units);
     OS_printf("    dgps_age = %lf,\n",    gpgga->dgps_age);
-    OS_printf("    dgps_sid = %d,\n",     gpgga->dgps_sid);
+    OS_printf("    dgps_sid = %d\n",      gpgga->dgps_sid);
     OS_printf("};\n");
 }
 
 void print_gpgsa(nmeaGPGSA *gpgsa) {
     OS_printf("GPGSA {\n");
-    OS_printf("    fix_mode = %s,\n", &gpgsa->fix_mode);
+    OS_printf("    fix_mode = %c,\n", gpgsa->fix_mode);
     OS_printf("    fix_type = %d,\n", gpgsa->fix_type);
     // int i = 0;
     // while (gpgsa->sat_prn[i]) {
@@ -93,10 +93,10 @@ void print_gpgsv(nmeaGPGSV *gpgsv) {
 
 void print_gpvtg(nmeaGPVTG *gpvtg) {
     OS_printf("GPVTG {\n");
-    OS_printf("    dir = %lf %s\n", gpvtg->dir, &gpvtg->dir_t);
-    OS_printf("    dec = %lf %s\n", gpvtg->dec, &gpvtg->dec_m);
-    OS_printf("    spn = %lf %s\n", gpvtg->spn, &gpvtg->spn_n);
-    OS_printf("    spk = %lf %s\n", gpvtg->spk, &gpvtg->spk_k);
+    OS_printf("    dir = %lf %c\n", gpvtg->dir, gpvtg->dir_t);
+    OS_printf("    dec = %lf %c\n", gpvtg->dec, gpvtg->dec_m);
+    OS_printf("    spn = %lf %c\n", gpvtg->spn, gpvtg->spn_n);
+    OS_printf("    spk = %lf %c\n", gpvtg->spk, gpvtg->spk_k);
     OS_printf("};\n");
 }
 
@@ -111,13 +111,13 @@ void print_gprmc(nmeaGPRMC *gprmc) {
     OS_printf("        sec  = %d,\n", gprmc->utc.sec);
     OS_printf("        hsec = %d,\n", gprmc->utc.hsec);
     OS_printf("    }\n");
-    OS_printf("    status      = %s\n",     &gprmc->status);
-    OS_printf("    lat         = %lf %1s\n", decimal_minutes2decimal_decimal(gprmc->lat), &gprmc->ns);
-    OS_printf("    lon         = %lf %1s\n", decimal_minutes2decimal_decimal(gprmc->lon), &gprmc->ew);
-    OS_printf("    speed       = %lf\n",     gprmc->speed);
-    OS_printf("    direction   = %lf\n",     gprmc->direction);
-    OS_printf("    declination = %lf %1s\n", gprmc->declination, &gprmc->declin_ew);
-    OS_printf("    mode        = %1s\n",    &gprmc->mode);
+    OS_printf("    status      = %c\n",     gprmc->status);
+    OS_printf("    lat         = %lf %c\n", decimal_minutes2decimal_decimal(gprmc->lat), gprmc->ns);
+    OS_printf("    lon         = %lf %c\n", decimal_minutes2decimal_decimal(gprmc->lon), gprmc->ew);
+    OS_printf("    speed       = %lf\n",    gprmc->speed);
+    OS_printf("    direction   = %lf\n",    gprmc->direction);
+    OS_printf("    declination = %lf %c\n", gprmc->declination, gprmc->declin_ew);
+    OS_printf("    mode        = %c\n",     gprmc->mode);
     OS_printf("};\n");
 }
 
