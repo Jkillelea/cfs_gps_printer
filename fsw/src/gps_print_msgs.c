@@ -87,20 +87,10 @@ void print_gpgsv(nmeaGPGSV *gpgsv) {
     OS_printf("    sat %d = {\n", gpgsv->sat_data[i].id);
     OS_printf("        sig       = %d\n", gpgsv->sat_data[i].sig);
     OS_printf("        in_use    = %d\n", gpgsv->sat_data[i].in_use);
-    OS_printf("        elv / azm = %d/%d\n", gpgsv->sat_data[i].elv, 
-                                          gpgsv->sat_data[i].azimuth);
+    OS_printf("        elv / azm = %d/%d\n", gpgsv->sat_data[i].elv, gpgsv->sat_data[i].azimuth);
     OS_printf("    }\n");
     }
     }
-    // for (int i = 0; i < info->satinfo.inview; i++) {
-    // OS_printf("        sat %d = {\n", i);
-    // OS_printf("            id = %d,\n", info->satinfo.sat[i].id);
-    // OS_printf("            in_use = %d,\n", info->satinfo.sat[i].in_use);
-    // OS_printf("            elv = %d,\n", info->satinfo.sat[i].elv);
-    // OS_printf("            azimuth = %d,\n", info->satinfo.sat[i].azimuth);
-    // OS_printf("            sig = %d,\n", info->satinfo.sat[i].sig);
-    // OS_printf("        }\n");
-    // }
     OS_printf("};\n");
 }
 
