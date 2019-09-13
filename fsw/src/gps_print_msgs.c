@@ -11,16 +11,11 @@ static double decimal_minutes2decimal_decimal(const double decimal_minutes) {
 
 void print_info(nmeaINFO *info) {
     OS_printf("info {\n");
-    OS_printf("    mask = %d,\n", info->smask);
-    OS_printf("    utc = {\n");
-    OS_printf("        year = %d,\n", info->utc.year);
-    OS_printf("        mon  = %d,\n", info->utc.mon);
-    OS_printf("        day  = %d,\n", info->utc.day);
-    OS_printf("        hour = %d,\n", info->utc.hour);
-    OS_printf("        min  = %d,\n", info->utc.min);
-    OS_printf("        sec  = %d,\n", info->utc.sec);
-    OS_printf("        hsec = %d,\n", info->utc.hsec);
-    OS_printf("    }\n");
+    OS_printf("    mask        = %d,\n", info->smask);
+    OS_printf("    utc         = %d-%d-%dT%d:%d:%d.%d\n",
+            info->utc.year, info->utc.mon, info->utc.day,
+            info->utc.hour, info->utc.min, info->utc.sec,
+            info->utc.hsec);
     OS_printf("    sig         = %d,\n",  info->sig);
     OS_printf("    fix         = %d,\n",  info->fix);
     OS_printf("    PDOP        = %lf,\n", info->PDOP);
@@ -41,15 +36,10 @@ void print_info(nmeaINFO *info) {
 
 void print_gpgga(nmeaGPGGA *gpgga) {
     OS_printf("GPGGA {\n");
-    OS_printf("    utc = {\n");
-    OS_printf("        year = %d,\n", gpgga->utc.year);
-    OS_printf("        mon  = %d,\n", gpgga->utc.mon);
-    OS_printf("        day  = %d,\n", gpgga->utc.day);
-    OS_printf("        hour = %d,\n", gpgga->utc.hour);
-    OS_printf("        min  = %d,\n", gpgga->utc.min);
-    OS_printf("        sec  = %d,\n", gpgga->utc.sec);
-    OS_printf("        hsec = %d,\n", gpgga->utc.hsec);
-    OS_printf("    },\n");
+    OS_printf("    utc      = %d-%d-%dT%d:%d:%d.%d\n",
+            gpgga->utc.year, gpgga->utc.mon, gpgga->utc.day,
+            gpgga->utc.hour, gpgga->utc.min, gpgga->utc.sec,
+            gpgga->utc.hsec);
     OS_printf("    lat      = %lf %c,\n", decimal_minutes2decimal_decimal(gpgga->lat), gpgga->ns);
     OS_printf("    lon      = %lf %c,\n", decimal_minutes2decimal_decimal(gpgga->lon), gpgga->ew);
     OS_printf("    sig      = %d,\n",     gpgga->sig);
@@ -66,11 +56,16 @@ void print_gpgsa(nmeaGPGSA *gpgsa) {
     OS_printf("GPGSA {\n");
     OS_printf("    fix_mode = %c,\n", gpgsa->fix_mode);
     OS_printf("    fix_type = %d,\n", gpgsa->fix_type);
-    // int i = 0;
-    // while (gpgsa->sat_prn[i]) {
-    //     OS_printf("    sat_prn = %d,\n", gpgsa->sat_prn[i]);
-    //     i++;
-    // }
+    int i;
+    for(int i = 0; gpgsa->sat_prn[i] != NULL && i < NMEA_MAXSAT; i++)
+    {
+    OS_printf("    %d ", gpgsa->sat_prn[i]);
+    }
+    if (i > 0)
+    {
+    OS_printf("    \n");
+    }
+
     OS_printf("    PDOP = %lf,\n", gpgsa->PDOP);
     OS_printf("    HDOP = %lf,\n", gpgsa->HDOP);
     OS_printf("    VDOP = %lf,\n", gpgsa->VDOP);
@@ -82,14 +77,12 @@ void print_gpgsv(nmeaGPGSV *gpgsv) {
     OS_printf("    pack_count = %d\n", gpgsv->pack_count);
     OS_printf("    pack_index = %d\n", gpgsv->pack_index);
     OS_printf("    sat_count  = %d\n", gpgsv->sat_count);
-    for (int i = 0; i < gpgsv->sat_count; i++) {
-    if (gpgsv->sat_data[i].id != 0 && gpgsv->sat_data[i].id < 200) {
+    for (int i = 0; i < NMEA_SATINPACK && gpgsv->sat_data[i].id != 0; i++) {
     OS_printf("    sat %d = {\n", gpgsv->sat_data[i].id);
-    OS_printf("        sig       = %d\n", gpgsv->sat_data[i].sig);
-    OS_printf("        in_use    = %d\n", gpgsv->sat_data[i].in_use);
-    OS_printf("        elv / azm = %d/%d\n", gpgsv->sat_data[i].elv, gpgsv->sat_data[i].azimuth);
+    OS_printf("        sig     = %d\n", gpgsv->sat_data[i].sig);
+    OS_printf("        in_use  = %d\n", gpgsv->sat_data[i].in_use);
+    OS_printf("        elv/azm = %d/%d\n", gpgsv->sat_data[i].elv, gpgsv->sat_data[i].azimuth);
     OS_printf("    }\n");
-    }
     }
     OS_printf("};\n");
 }
@@ -105,15 +98,10 @@ void print_gpvtg(nmeaGPVTG *gpvtg) {
 
 void print_gprmc(nmeaGPRMC *gprmc) {
     OS_printf("GPRMC {\n");
-    OS_printf("    utc = {\n");
-    OS_printf("        year = %d,\n", gprmc->utc.year);
-    OS_printf("        mon  = %d,\n", gprmc->utc.mon);
-    OS_printf("        day  = %d,\n", gprmc->utc.day);
-    OS_printf("        hour = %d,\n", gprmc->utc.hour);
-    OS_printf("        min  = %d,\n", gprmc->utc.min);
-    OS_printf("        sec  = %d,\n", gprmc->utc.sec);
-    OS_printf("        hsec = %d,\n", gprmc->utc.hsec);
-    OS_printf("    }\n");
+    OS_printf("    utc         = %d-%d-%dT%d:%d:%d.%d\n",
+            gprmc->utc.year, gprmc->utc.mon, gprmc->utc.day,
+            gprmc->utc.hour, gprmc->utc.min, gprmc->utc.sec,
+            gprmc->utc.hsec);
     OS_printf("    status      = %c\n",     gprmc->status);
     OS_printf("    lat         = %lf %c\n", decimal_minutes2decimal_decimal(gprmc->lat), gprmc->ns);
     OS_printf("    lon         = %lf %c\n", decimal_minutes2decimal_decimal(gprmc->lon), gprmc->ew);
