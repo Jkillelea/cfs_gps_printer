@@ -57,7 +57,7 @@ void print_gpgsa(nmeaGPGSA *gpgsa) {
     OS_printf("    fix_mode = %c,\n", gpgsa->fix_mode);
     OS_printf("    fix_type = %d,\n", gpgsa->fix_type);
     int i;
-    for(int i = 0; gpgsa->sat_prn[i] != NULL && i < NMEA_MAXSAT; i++)
+    for(i = 0; gpgsa->sat_prn[i] != 0 && i < NMEA_MAXSAT; i++)
     {
     OS_printf("    %d ", gpgsa->sat_prn[i]);
     }
