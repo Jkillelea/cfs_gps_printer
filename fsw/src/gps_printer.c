@@ -6,22 +6,22 @@
 #include "gps_printer_perfids.h"
 
 CFE_SB_PipeId_t gpsPipe;
-CFE_SB_MsgPtr_t gpsMessage;
+CFE_SB_Buffer_t *gpsMessage;
 
 void GPS_PRINTER_Main(void) {
-    uint32 runStatus = CFE_ES_APP_RUN;
+    uint32 runStatus = CFE_ES_RunStatus_APP_RUN;
     GPS_PRINTER_Init();
 
-    while (CFE_ES_RunLoop(&runStatus) == TRUE) {
+    while (CFE_ES_RunLoop(&runStatus) == true) {
 
         CFE_ES_PerfLogExit(GPS_PRINTER_PERFID);
 
-        int32 status = CFE_SB_RcvMsg(&gpsMessage, gpsPipe, CFE_SB_PEND_FOREVER);
+        int32 status = CFE_SB_ReceiveBuffer(&gpsMessage, gpsPipe, CFE_SB_PEND_FOREVER);
 
         CFE_ES_PerfLogEntry(GPS_PRINTER_PERFID);
 
         if (status == CFE_SUCCESS) {
-            CFE_SB_MsgId_t msgId = CFE_SB_GetMsgId(gpsMessage);
+            CFE_SB_MsgId_t msgId = CFE_SB_GetMsgId(&gpsMessage->Msg);
 
             switch (msgId) {
             case GPS_READER_GPS_INFO_MSG: {
@@ -64,7 +64,7 @@ void GPS_PRINTER_Main(void) {
 
 void GPS_PRINTER_Init(void) {
     CFE_ES_RegisterApp();
-    CFE_EVS_Register(NULL, 0, CFE_EVS_BINARY_FILTER);
+    CFE_EVS_Register(NULL, 0, CFE_EVS_EventFilter_BINARY);
 
     OS_printf("GPS_PRINTER: Startup.");
 
