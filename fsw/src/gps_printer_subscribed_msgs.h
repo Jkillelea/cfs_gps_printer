@@ -1,0 +1,13 @@
+#ifndef GPS_PRINTER_SUBSCRIBED_MSGS_H_
+#define GPS_PRINTER_SUBSCRIBED_MSGS_H_
+
+#include <cfe.h>
+#include <cfe_sb.h>
+
+#define GPS_PRINTER_SUBSCRIBETABLE_LEN (10)
+#define GPS_PRINTER_SUBSCRIBETABLE_END (CFE_SB_INVALID_MSG_ID)
+
+extern CFE_SB_MsgId_t GPS_Printer_SubscribeTable[GPS_PRINTER_SUBSCRIBETABLE_LEN+1];
+
+#endif /* end of include guard: GPS_PRINTER_SUBSCRIBED_MSGS_H_ */
+
