@@ -21,7 +21,8 @@ void GPS_PRINTER_Main(void) {
         CFE_ES_PerfLogEntry(GPS_PRINTER_PERFID);
 
         if (status == CFE_SUCCESS) {
-            CFE_SB_MsgId_t msgId = CFE_SB_GetMsgId(&gpsMessage->Msg);
+            CFE_SB_MsgId_t msgId = 0;
+            CFE_MSG_GetMsgId(&gpsMessage->Msg, &msgId);
 
             switch (msgId) {
             case GPS_READER_GPS_INFO_MSG: {
@@ -63,7 +64,6 @@ void GPS_PRINTER_Main(void) {
 }
 
 void GPS_PRINTER_Init(void) {
-    CFE_ES_RegisterApp();
     CFE_EVS_Register(NULL, 0, CFE_EVS_EventFilter_BINARY);
 
     OS_printf("GPS_PRINTER: Startup.");
