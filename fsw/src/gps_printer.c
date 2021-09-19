@@ -1,5 +1,3 @@
-#include "cfe.h"
-#include "gps_printer.h"
 #include "gps_reader_msgids.h"
 #include "gps_reader_msgs.h"
 #include "gps_print_msgs.h"
@@ -7,6 +5,41 @@
 
 CFE_SB_PipeId_t gpsPipe;
 CFE_SB_Buffer_t *gpsMessage;
+
+#define GPS_PRINTER_MAX_SUBS (10)
+CFE_SB_MsgId_t GpsPrinterSubs[GPS_PRINTER_MAX_SUBS] = {
+    // GPS_READER_GPS_INFO_MSG,
+    // GPS_READER_GPS_GPGGA_MSG,
+    // GPS_READER_GPS_GPGSA_MSG,
+    // GPS_READER_GPS_GPGSV_MSG,
+    GPS_READER_GPS_GPRMC_MSG,
+    // GPS_READER_GPS_GPVTG_MSG,
+    0
+};
+
+void GPS_PRINTER_Init(void) {
+    CFE_ES_WriteToSysLog("GPS_PRINTER: Startup.");
+
+    CFE_EVS_Register(NULL, 0, CFE_EVS_EventFilter_BINARY);
+
+    CFE_SB_CreatePipe(&gpsPipe, 10, "GPS_PRINTER_PIPE");
+
+    for (int i = 0; i < GPS_PRINTER_MAX_SUBS; i++)
+    {
+        if (GpsPrinterSubs[i] != 0)
+        {
+            CFE_Status_t status = CFE_SB_Subscribe(GpsPrinterSubs[i],  gpsPipe);
+            if (status != CFE_SUCCESS)
+            {
+                CFE_ES_WriteToSysLog("GPS_PRINTER: Failed to subscribe to table index %d!\n", i);
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
+}
 
 void GPS_PRINTER_Main(void) {
     uint32 runStatus = CFE_ES_RunStatus_APP_RUN;
@@ -63,16 +96,3 @@ void GPS_PRINTER_Main(void) {
     }
 }
 
-void GPS_PRINTER_Init(void) {
-    CFE_EVS_Register(NULL, 0, CFE_EVS_EventFilter_BINARY);
-
-    OS_printf("GPS_PRINTER: Startup.");
-
-    CFE_SB_CreatePipe(&gpsPipe, 10, "GPS_PRINTER_PIPE");
-    CFE_SB_Subscribe(GPS_READER_GPS_INFO_MSG,  gpsPipe);
-    CFE_SB_Subscribe(GPS_READER_GPS_GPGGA_MSG, gpsPipe);
-    CFE_SB_Subscribe(GPS_READER_GPS_GPGSA_MSG, gpsPipe);
-    CFE_SB_Subscribe(GPS_READER_GPS_GPGSV_MSG, gpsPipe);
-    CFE_SB_Subscribe(GPS_READER_GPS_GPRMC_MSG, gpsPipe);
-    CFE_SB_Subscribe(GPS_READER_GPS_GPVTG_MSG, gpsPipe);
-}
