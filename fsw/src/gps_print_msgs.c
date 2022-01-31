@@ -10,14 +10,38 @@ static double decimal_minutes2decimal_decimal(const double decimal_minutes) {
 }
 
 void print_info(nmeaINFO *info) {
+
+    const char *nmeaSignalNames[] = {
+        [0] = "NMEA_SIG_BAD",
+        [1] = "NMEA_SIG_LOW",
+        [2] = "NMEA_SIG_MID",
+        [3] = "NMEA_SIG_HIGH",
+    };
+
+    const char *nmeaFixNames[] = {
+        [0] = "[Invalid Fix]",
+        [1] = "NMEA_FIX_BAD",
+        [2] = "NMEA_FIX_2D",
+        [3] = "NMEA_FIX_3D",
+    };
+
+
     OS_printf("info {\n");
-    OS_printf("    mask        = %d,\n", info->smask);
+    OS_printf("    mask        = [%s%s%s%s%s%s] (%d),\n",
+            info->smask & GPNON? "GPNON, " : "",
+            info->smask & GPGGA? "GPGGA, " : "",
+            info->smask & GPGSA? "GPGSA, " : "",
+            info->smask & GPGSV? "GPGSV, " : "",
+            info->smask & GPRMC? "GPRMC, " : "",
+            info->smask & GPVTG? "GPVTG, " : "",
+            info->smask);
+
     OS_printf("    utc         = %d-%d-%dT%d:%d:%d.%d\n",
             info->utc.year, info->utc.mon, info->utc.day,
             info->utc.hour, info->utc.min, info->utc.sec,
             info->utc.hsec);
-    OS_printf("    sig         = %d,\n",  info->sig);
-    OS_printf("    fix         = %d,\n",  info->fix);
+    OS_printf("    sig         = %s,\n",  nmeaSignalNames[info->sig]);
+    OS_printf("    fix         = %s,\n",  nmeaFixNames[info->fix]);
     OS_printf("    PDOP        = %lf,\n", info->PDOP);
     OS_printf("    HDOP        = %lf,\n", info->HDOP);
     OS_printf("    VDOP        = %lf,\n", info->VDOP);
