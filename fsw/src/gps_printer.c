@@ -7,17 +7,18 @@ CFE_SB_PipeId_t gpsPipe;
 CFE_SB_Buffer_t *gpsMessage;
 
 #define GPS_PRINTER_MAX_SUBS (10)
-CFE_SB_MsgId_t GpsPrinterSubs[GPS_PRINTER_MAX_SUBS] = {
-    GPS_READER_GPS_INFO_MSG,
-    // GPS_READER_GPS_GPGGA_MSG,
-    // GPS_READER_GPS_GPGSA_MSG,
-    // GPS_READER_GPS_GPGSV_MSG,
-    // GPS_READER_GPS_GPRMC_MSG,
-    // GPS_READER_GPS_GPVTG_MSG,
-    0
-};
-
 void GPS_PRINTER_Init(void) {
+
+    const CFE_SB_MsgId_t GpsPrinterSubs[GPS_PRINTER_MAX_SUBS] = {
+        CFE_SB_ValueToMsgId(GPS_READER_GPS_INFO_MSG),
+        // CFE_SB_ValueToMsgId(GPS_READER_GPS_GPGGA_MSG),
+        // CFE_SB_ValueToMsgId(GPS_READER_GPS_GPGSA_MSG),
+        // CFE_SB_ValueToMsgId(GPS_READER_GPS_GPGSV_MSG),
+        // CFE_SB_ValueToMsgId(GPS_READER_GPS_GPRMC_MSG),
+        // CFE_SB_ValueToMsgId(GPS_READER_GPS_GPVTG_MSG),
+        CFE_SB_ValueToMsgId(0)
+    };
+
     CFE_ES_WriteToSysLog("GPS_PRINTER: Startup.");
 
     CFE_EVS_Register(NULL, 0, CFE_EVS_EventFilter_BINARY);
@@ -26,7 +27,7 @@ void GPS_PRINTER_Init(void) {
 
     for (int i = 0; i < GPS_PRINTER_MAX_SUBS; i++)
     {
-        if (GpsPrinterSubs[i] != 0)
+        if (CFE_SB_MsgIdToValue(GpsPrinterSubs[i]) != 0)
         {
             CFE_Status_t status = CFE_SB_Subscribe(GpsPrinterSubs[i],  gpsPipe);
             if (status != CFE_SUCCESS)
@@ -54,10 +55,10 @@ void GPS_PRINTER_Main(void) {
         CFE_ES_PerfLogEntry(GPS_PRINTER_PERFID);
 
         if (status == CFE_SUCCESS) {
-            CFE_SB_MsgId_t msgId = 0;
+            CFE_SB_MsgId_t msgId;
             CFE_MSG_GetMsgId(&gpsMessage->Msg, &msgId);
 
-            switch (msgId) {
+            switch (CFE_SB_MsgIdToValue(msgId)) {
             case GPS_READER_GPS_INFO_MSG: {
                 GpsInfoMsg_t *gpsInfo = (GpsInfoMsg_t *) gpsMessage;
                 print_info(&gpsInfo->gpsInfo);
@@ -89,7 +90,7 @@ void GPS_PRINTER_Main(void) {
                 break;
             }
             default:
-                OS_printf("GPS_PRINTER: Unkown message ID 0x%x\n", msgId);
+                OS_printf("GPS_PRINTER: Unkown message ID 0x%x\n", CFE_SB_MsgIdToValue(msgId));
                 break;
             }
         }
